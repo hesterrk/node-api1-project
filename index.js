@@ -5,7 +5,7 @@ const express = require("express");
 const server = express();
 server.use(express.json());
 
-const db = require("./data/db");
+let db = require("./data/db");
 
 //GET: add first data: .find()--> gets all users
 
@@ -20,6 +20,29 @@ server.get("/api/users", (req, res) => {
       res.status(500).json({ errorMessage: "The users information could not be retrieved."});
     });
 });
+
+//GET: specific user: `/api/users/:id`
+
+server.get("/api/users/:id", (req, res) => {
+    const id = req.params.id
+    // const user = db.find(us => us.id == id)
+    
+    
+    db.findById(id).then(us => {
+        if(us) {
+            res.status(201).json(us)
+        } else {
+            res.status(404).json({message: "The user with the specified ID does not exist."})
+            
+        }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({errorMessage: "The user information could not be retrieved."})
+        })
+    })
+
+    
 
 
 
