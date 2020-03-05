@@ -48,18 +48,17 @@ server.get("/api/users/:id", (req, res) => {
     server.post('/api/users', (req, res) => {
         const dbInfo = req.body
 
-        db.insert(dbInfo).then(user => {
-            if(dbInfo.name || dbInfo.bio ) {
+            if(dbInfo.name  && dbInfo.bio ) {
+                db.insert(dbInfo).then(user => {
                 res.status(201).json(user)
+            }).catch(err => {
+                res.status(500).json({errorMessage: "There was an error while saving the user to the database"})
+            })
 
             } else {
                 res.status(400).json({errorMessage: "Please provide name and bio for the user."})
-
             }
            
-        }).catch(err => {
-            res.status(500).json({errorMessage: "There was an error while saving the user to the database"})
-        })
     })
 
 
