@@ -80,9 +80,38 @@ server.get("/api/users/:id", (req, res) => {
         })
     })
 
-    
-   
 
+
+    //PUT: update(id, bodywithchanges) /api/users/:id 
+    //returns the count of updated records. If the count is 1 it means the record was updated correctly.
+    //returns updated not the original 
+    
+   server.put('/api/users/:id', (req, res) => {
+       const changeUser = req.body
+       const id = req.params.id
+       
+       if(!changeUser.name && !changeUser.bio) {
+           res.status(400).json({errorMessage: "Please provide name and bio for the user."})
+       }
+
+       else {
+           db.update(id, changeUser).then(user => {
+               if(user) {
+                   db.findById(id).then(user => {
+                       res.status(200).json(user)
+                   });
+               } else {
+                   res.status(404).json({message: "The user with the specified ID does not exist."})
+
+               }
+           })
+           .catch(err => {
+               res.status(500).json({errorMessage: "The user information could not be modified"})
+           })
+       }
+
+
+   })
 
 
 
